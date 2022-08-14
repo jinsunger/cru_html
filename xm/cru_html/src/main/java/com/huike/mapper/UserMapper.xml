@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huike.mapper.UserMapper">
+
+    <select id="getUser" resultType="User">/*查询用户*/
+        select * from user
+    </select>
+
+    <insert id="addById">/*添加用户*/
+        insert into user(id, userName, sex, image) VALUES (#{id},#{user_name},#{sex},#{image})
+    </insert>
+
+    <delete id="deleteId">/*删除用户*/
+        delete from user where id=#{id}
+    </delete>
+</mapper>

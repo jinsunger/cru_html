@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../../Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../../Css/style.css" />
+    <script type="text/javascript" src="../../Js/jquery.js"></script>
+    <!--<script type="text/javascript" src="../Js/jquery.sorted.js"></script>-->
+    <script type="text/javascript" src="../../Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../Js/ckform.js"></script>
+    <script type="text/javascript" src="../../Js/common.js"></script>
+
+
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+        a:link {
+            font-size: 12px;
+            text-decoration: none;
+        }
+        a:visited {
+            font-size: 12px;
+            text-decoration: none;
+        }
+        a:hover {
+            font-size: 12px;
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+<body>
+<form id="myForm" class="form-inline definewidth m20">
+    用户名称：
+    <input type="text" name="loginName" id="loginName"class="abc input-default" placeholder="输入账户">&nbsp;&nbsp;
+    页号
+    <input  type="text" class="abc input-default"  placeholder="" id="pageNum" name="pageNum" value="1" /> &nbsp;
+    单页条数：
+    <select class="form-control" name="pageSize">
+        <option value="5" selected="selected">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+    </select> &nbsp;
+    <button type="button"  class="btn btn-primary">查询</button>
+</form>
+
+<table class="table table-bordered table-hover definewidth m10">
+
+    <thead>
+    <tr>
+        <th width="5%"><input type="checkbox" id="checkall" onChange="checkall();"></th>
+        <th>序号</th>
+        <th>真实姓名</th>
+        <th>性别</th>
+        <th>照片</th>
+        <th  width="10%">操作</th>
+    </tr>
+    </thead>
+
+    <tbody id="tbody">
+
+    </tbody>
+
+</table>
+<table class="table table-bordered table-hover definewidth m10" >
+    <tr>
+        <th colspan="5">
+            <div class="inline pull-right page">
+                <span id="total_user"></span>条记录
+                <span id="now_page"></span>/<span id="total_page"></span>页
+                <div name="pageDiv">
+                    <span name="pageSpan" id="first_page"><a href='javascript:void(0)'>首页</a></span>
+                    <span name="pageSpan" id="pre_page"><a href="javascript:void(0)">上一页</a></span>
+                    <span id="first_point">...</span>
+                    <span name="pageSpan" id="page1"><a href='javascript:void(0)'>1</a></span>
+                    <span name="pageSpan" id="page2"><a href='javascript:void(0)'>2</a></span>
+                    <span name="pageSpan" id="page3"><a href='javascript:void(0)'>3</a></span>
+                    <span name="pageSpan" id="page4"><a href='javascript:void(0)'>4</a></span>
+                    <span name="pageSpan" id="page5"><a href='javascript:void(0)'>5</a></span>
+                    <span id="last_point">...</span>
+                    <span name="pageSpan" id="next_page"><a href='javascript:void(0)' >下一页</a></span>
+                    <span name="pageSpan" id="last_page"><a href='javascript:void(0)' >尾页</a></span>
+                </div>
+            </div>
+            <div><button type="button" class="btn btn-success" id="newNav">添加用户</button>&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-success" id="delPro" onClick="delAll();">删除选中</button>
+            </div>
+        </th>
+    </tr>
+</table>
+</body>
+</html>
+
+<script type="text/javascript">
+     //创建查询数据的函数
+     function findList(){
+         $.ajax({
+             url:"/user/list",
+             method:"GET",
+             dataType:"json",
+             success:function (result){
+
+                 var list = result.list;
+                 var str = "";
+                 for(var i = 0;i<list.length;i++){
+
+                     str +="<tr>\n" +
+                         "        <th width=\"5%\"><input type=\"checkbox\"></th>\n" +
+                         "        <th>"+list[i].id+"</th>\n" +
+                         "        <th>"+list[i].userName+"</th>\n" +
+                         "        <th>"+list[i].sex+"</th>\n" +
+                         "        <th>"+list[i].image+"</th>\n" +
+                         "        <th  width=\"10%\">\n" +
+                         "          <a href=\"\" onclick=\"deleteById("+list[i].id+")\">删除</a>" +
+                         "            <a href=\"\">修改</a>\n" +
+                         "        </th>\n" +
+                         "    </tr>";
+                 }
+                 $("#tbody").html(str);
+             }
+         })
+     }
+
+     //调用findList函数
+     findList();
+
+     //删除方法
+     function deleteById(id){
+         var bol = confirm("你确定要删除吗");
+         if(bol){
+            //删除
+
+             $.ajax({
+
+                 url:"/user/delete/"+id,
+                 method: "DELETE",
+                 dataType: "json",
+                 success:function (result){
+                     alert(result.message);
+                     if(result.stua=="200"){
+                         findList();
+                     }
+                 }
+             })
+         }else{
+             return false;
+         }
+     }
+</script>
